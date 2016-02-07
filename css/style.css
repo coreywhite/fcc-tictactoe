@@ -1,0 +1,44 @@
+html, body {
+  height: 100%;
+  font-family: 'Open Sans', sans-serif;
+  background: #16222A; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #16222A , #3A6073); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #16222A , #3A6073); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #ccc;
+}
+
+.page-header {
+  text-align: center;
+}
+
+.board-container .row {
+  width: 304px;
+  margin: 0 auto;
+}
+
+.board-container .cell {
+  display: table-cell;
+  width: 100px;
+  height: 100px;
+}
+
+/*Expand on large screens*/
+@media screen and (min-width: 700px) and (min-height: 800px) {
+  .board-container .row {
+    width: 604px;
+  }
+  .board-container .cell {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+/*Borders on middle row and column*/
+.board-container .cell[data-row="1"] {
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+.board-container .cell[data-col="1"] {
+  border-right: 2px solid #fff;
+  border-left: 2px solid #fff;
+}
