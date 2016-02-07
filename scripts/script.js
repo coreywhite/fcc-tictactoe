@@ -31,7 +31,7 @@ function Grid(size, $container) {
   }
 }
 
-Grid.prototype.GetCell= function(row, col) {
+Grid.prototype.GetCell = function(row, col) {
   return this.cells[row][col];
 };
 
@@ -41,8 +41,6 @@ Grid.prototype.GetCell= function(row, col) {
 $(document).ready(function() {
   var board = new Grid(3, $(".board-container"));
   $(".board-container").on("click", ".cell", function() {
-    //alert("Row: " + $(this).data("row") + " Col: " + $(this).data("col"));
-    var cell = board.GetCell($(this).data("row"), $(this).data("col")).Select();
-
+    board.GetCell($(this).data("row"), $(this).data("col")).Select();
   })
 });
