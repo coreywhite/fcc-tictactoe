@@ -6,10 +6,13 @@ function Cell(game, row, col, $element) {
   this.marker = "";
 }
 
-Cell.prototype.SetMarker = function(mark) {
-  this.marker = mark;
-  this.element.text(this.marker);
-}
+Cell.prototype = {
+  constructor: Cell,
+  setMarker: function(mark) {
+    this.marker = mark;
+    this.element.text(this.marker);
+  }
+};
 
 function Grid(game, size, $container) {
   this.game = game;
@@ -38,42 +41,62 @@ function Grid(game, size, $container) {
   }
 }
 
-Grid.prototype.GetCell = function(row, col) {
-  return this.cells[row][col];
+Grid.prototype = {
+  constructor: Grid,
+  getCell: function(row, col) {
+    return this.cells[row][col];
+  }
 };
+
+function HumanController(game) {
+  this.game = game;
+  this.player = null;
+  this.name = "Human";
+}
+
+HumanController.prototype = {
+  constructor: HumanController,
+  setPlayer: function(player) {
+    this.player = player;
+  }
+}
 
 function Player(name, marker, controller) {
   this.name = name;
   this.marker = marker;
   this.controller = controller;
+  this.controller.setPlayer(this);
 }
-
 
 function Game($boardContainer, $playerContainer) {
   this.board = new Grid(this, 3, $boardContainer);
-  this.p1 = new Player("Player 1", "X", "Human");
-  this.p2 = new Player("Player 2", "O", "Human");
+  this.p1 = new Player("Player 1", "X", new HumanController(this));
+  this.p2 = new Player("Player 2", "O", new HumanController(this));
   this.curPlayer = this.p1;
 }
 
-Game.prototype.Move = function(row, col) {
-  var cell = this.board.GetCell(row, col);
-  if (cell.marker === "") {
-      cell.SetMarker(this.curPlayer.marker);
+Game.prototype = {
+  constructor: Game,
+  isValidMove: function(cell) {
+    return cell.marker === "";
+  },
+  move: function(row, col) {
+    var moveCell = this.board.getCell(row, col);
+    if (this.isValidMove(moveCell)) {
+      moveCell.setMarker(this.curPlayer.marker);
       this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
+    }
   }
 };
-
-
 
 
 //*********************************************************************
 //* Run code when page is ready
 //*********************************************************************
 $(document).ready(function() {
-  var game = new Game($(".board-container"));
+  var game = new Game($(".board-container"), $(".player-container"));
 
   $(".board-container").on("click", ".cell", function() {
-    game.Move($(this).data("row"), $(this).data("col"));
+    game.move($(this).data("row"), $(this).data("col"));
   })
 });
