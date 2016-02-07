@@ -4,11 +4,11 @@ function Cell(game, row, col, $element) {
   this.col = col;
   this.element = $element;
   this.marker = "";
-  this.Select = function() {
-    if (this.marker === "") {
-      this.element.toggleClass("white");
-    }
-  }
+}
+
+Cell.prototype.SetMarker = function(mark) {
+  this.marker = mark;
+  this.element.text(this.marker);
 }
 
 function Grid(game, size, $container) {
@@ -53,7 +53,16 @@ function Game($boardContainer, $playerContainer) {
   this.board = new Grid(this, 3, $boardContainer);
   this.p1 = new Player("Player 1", "X", "Human");
   this.p2 = new Player("Player 2", "O", "Human");
+  this.curPlayer = this.p1;
 }
+
+Game.prototype.Move = function(row, col) {
+  var cell = this.board.GetCell(row, col);
+  if (cell.marker === "") {
+      cell.SetMarker(this.curPlayer.marker);
+      this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
+  }
+};
 
 
 
@@ -65,6 +74,6 @@ $(document).ready(function() {
   var game = new Game($(".board-container"));
 
   $(".board-container").on("click", ".cell", function() {
-    game.board.GetCell($(this).data("row"), $(this).data("col")).Select();
+    game.Move($(this).data("row"), $(this).data("col"));
   })
 });
