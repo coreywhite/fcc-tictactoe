@@ -34,11 +34,25 @@ html, body {
 }
 
 /*Borders on middle row and column*/
-.board-container .cell[data-row="1"] {
-  border-top: 2px solid #fff;
-  border-bottom: 2px solid #fff;
+.board-container .row[data-row="1"] {
+  border-top: 2px solid rgb(86, 180, 239);
+  border-bottom: 2px solid rgb(86, 180, 239);
 }
 .board-container .cell[data-col="1"] {
-  border-right: 2px solid #fff;
-  border-left: 2px solid #fff;
+  border-right: 2px solid rgb(86, 180, 239);
+  border-left: 2px solid rgb(86, 180, 239);
+}
+
+/*Glows on grid lines*/
+.board-container .row[data-row="0"] {
+  box-shadow: 0px 5px 2px -2px #9ecaed;
+}
+.board-container .row[data-row="1"] {
+  box-shadow: 0px 3px 2px -2px #9ecaed;
+}
+.board-container .cell[data-col="0"] {
+  box-shadow: 5px 0px 3px -2px #9ecaed;
+}
+.board-container .cell[data-col="1"] {
+  box-shadow: 3px 0px 3px -2px #9ecaed;
 }
