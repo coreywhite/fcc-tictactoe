@@ -5,7 +5,6 @@ function Cell(game, row, col, $element) {
   this.element = $element;
   this.marker = "";
 }
-
 Cell.prototype = {
   constructor: Cell,
   setMarker: function(mark) {
@@ -40,7 +39,6 @@ function Grid(game, size, $container) {
     this.container.append($row);
   }
 }
-
 Grid.prototype = {
   constructor: Grid,
   getCell: function(row, col) {
@@ -53,7 +51,6 @@ function HumanController(game) {
   this.player = null;
   this.name = "Human";
 }
-
 HumanController.prototype = {
   constructor: HumanController,
   setPlayer: function(player) {
