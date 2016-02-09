@@ -21,37 +21,47 @@
     </div>
 
     <div class="container board-container">
-      <!-- <div class="row row-top">
-        <div class="cell col-left"></div>
-        <div class="cell col-middle"></div>
-        <div class="cell col-right"></div>
-      </div>
-      <div class="row row-middle">
-        <div class="cell col-left"></div>
-        <div class="cell col-middle"></div>
-        <div class="cell col-right"></div>
-      </div>
-      <div class="row row-bottom">
-        <div class="cell col-left"></div>
-        <div class="cell col-middle"></div>
-        <div class="cell col-right"></div>
-      </div> -->
     </div>
 
-    <div class="container controls">
+    <div class="container display-container">
+      <h2 id="message"></h2>
       <ul class="players">
         <li>
           <ul class="player" id="p1">
-            <li class="player-name">Player 1</li>
-            <li class="player-controller">Human</li>
-            <li class="player-mark">X</li>
+            <li class="player-name" contentEditable="true">Player 1</li>
+            <li class="player-controller">
+              <select name="select-p1-controller">
+                <option value="human">Human</option>
+                <option value="easy">Easy</option>
+                <option value="normal">Normal</option>
+                <option value="hard">Hard</option>
+              </select>
+            </li>
+            <li class="player-mark">
+              <select name="select-p1-marker">
+                <option value="X" selected>X</option>
+                <option value="O">O</option>
+              </select>
+            </li>
           </ul>
         </li>
         <li>
           <ul class="player" id="p2">
-            <li class="player-name">Player 2</li>
-            <li class="player-controller">Human</li>
-            <li class="player-mark">O</li>
+            <li class="player-name" contentEditable="true">Player 2</li>
+            <li class="player-controller">
+              <select name="select-p2-controller">
+                <option value="human">Human</option>
+                <option value="easy">Easy</option>
+                <option value="normal">Normal</option>
+                <option value="hard">Hard</option>
+              </select>
+            </li>
+            <li class="player-mark">
+              <select name="select-p2-marker">
+                <option value="X">X</option>
+                <option value="O" selected>O</option>
+              </select>
+            </li>
           </ul>
         </li>
     </div>
