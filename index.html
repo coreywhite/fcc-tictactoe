@@ -28,9 +28,9 @@
       <ul class="players">
         <li>
           <ul class="player" id="p1">
-            <li class="player-name" contentEditable="true">Player 1</li>
+            <li class="player-name" contentEditable="true" data-player="p1">Player 1</li>
             <li class="player-controller">
-              <select name="select-p1-controller">
+              <select name="p1-select-controller" class="player-select-controller" data-player="p1">
                 <option value="human">Human</option>
                 <option value="easy">Easy</option>
                 <option value="normal">Normal</option>
@@ -38,7 +38,7 @@
               </select>
             </li>
             <li class="player-mark">
-              <select name="select-p1-marker">
+              <select name="p1-select-marker" class="player-select-marker" data-player="p1">
                 <option value="X" selected>X</option>
                 <option value="O">O</option>
               </select>
@@ -47,9 +47,9 @@
         </li>
         <li>
           <ul class="player" id="p2">
-            <li class="player-name" contentEditable="true">Player 2</li>
+            <li class="player-name" contentEditable="true" data-player="p2">Player 2</li>
             <li class="player-controller">
-              <select name="select-p2-controller">
+              <select name="p2-select-controller" class="player-select-controller" data-player="p2">
                 <option value="human">Human</option>
                 <option value="easy">Easy</option>
                 <option value="normal">Normal</option>
@@ -57,7 +57,7 @@
               </select>
             </li>
             <li class="player-mark">
-              <select name="select-p2-marker">
+              <select name="p2-select-marker" class="player-select-marker" data-player="p2">
                 <option value="X">X</option>
                 <option value="O" selected>O</option>
               </select>

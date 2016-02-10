@@ -165,7 +165,7 @@ Game.prototype = {
     //Check for victory!
     if (this.isWinner(this.curPlayer)) {
       this.curPlayer.score++;
-      this.display.message(this.curPlayer.name + " has won!");
+      this.display.message(this.curPlayer.name + " wins!");
       this.curPlayer = null;
     } else {
       this.togglePlayer();
