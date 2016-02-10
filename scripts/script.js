@@ -1,15 +1,21 @@
+/******************************************************************************
+/* Object definitions for grid and cells
+******************************************************************************/
 function Cell(game, row, col, $element) {
   this.game = game;
   this.row = row;
   this.col = col;
-  this.element = $element;
-  this.marker = "";
+  this.$element = $element;
+  this.value = null;
 }
 Cell.prototype = {
   constructor: Cell,
-  setMarker: function(mark) {
-    this.marker = mark;
-    this.element.text(this.marker);
+  hasValue: function() {
+    return this.value !== null;
+  },
+  setValue: function(mark) {
+    this.value = mark;
+    this.$element.text(this.value);
   }
 };
 
@@ -43,8 +49,47 @@ Grid.prototype = {
   constructor: Grid,
   getCell: function(row, col) {
     return this.cells[row][col];
+  },
+  getRow: function(i) {
+    return this.cells[i];
+  },
+  getCol: function(i) {
+    return this.cells.map(function(row, idx) {
+      return row[i];
+    });
+  },
+  getDiag: function(i) {
+    //Valid diagonal indices are 0 (down-right) & 1 (up-right)
+    return this.cells.map(function(row, idx) {
+      return row[i === 0 ? idx : row.length - idx - 1];
+    });
+  },
+  getMatchingSet: function() {
+    //Return a row, column, or main diagonal for which all cells match
+    function allMatch(arr) {
+      var first = arr[0].value;
+      return arr.every(function(el) {
+        return first !== null && el.value === first;
+      });
+    }
+    for (var i = 0; i < this.size; i++) {
+      if (allMatch(this.getRow(i))) {
+        return this.getRow(i);
+      }
+      if (allMatch(this.getCol(i))) {
+        return this.getCol(i);
+      }
+      if ((i === 0 || i === 1) && allMatch(this.getDiag(i))) {
+        return this.getDiag(i);
+      }
+    }
+    return null;
   }
 };
+
+/******************************************************************************
+/* Object defintions for Game, Player, and Controllers
+******************************************************************************/
 
 function Controller(game, type) {
   this.game = game;
@@ -74,6 +119,7 @@ function Player(name, marker, controller) {
   this.marker = marker;
   this.controller = controller;
   this.controller.setPlayer(this);
+  this.score = 0;
 }
 
 function Display($displayContainer) {
@@ -96,29 +142,41 @@ function Game($boardContainer, $displayContainer) {
 Game.prototype = {
   constructor: Game,
   isValidMove: function(cell) {
-    return cell.marker === "";
+    return !cell.hasValue();
   },
   activateCell: function(row, col) {
     if (this.curPlayer.controller.type === "Human") {
       this.move(this.board.getCell(row, col));
     }
   },
-  togglePlayer() {
+  isWinner: function(player) {
+    var match = this.board.getMatchingSet();
+    return (Array.isArray(match) && match[0].value === player.marker);
+  },
+  togglePlayer: function() {
     this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
     this.curPlayer.controller.takeTurn();
   },
   move: function(cell) {
-    if (this.isValidMove(cell)) {
-      cell.setMarker(this.curPlayer.marker);
+    if (!this.isValidMove(cell)) {
+      return false;
+    }
+    cell.setValue(this.curPlayer.marker);
+    //Check for victory!
+    if (this.isWinner(this.curPlayer)) {
+      this.curPlayer.score++;
+      this.display.message(this.curPlayer.name + " has won!");
+      this.curPlayer = null;
+    } else {
       this.togglePlayer();
     }
   }
 };
 
 
-//*********************************************************************
-//* Run code when page is ready
-//*********************************************************************
+/******************************************************************************
+/* Run code when page is ready to instantiate objects and hook up the UI
+******************************************************************************/
 $(document).ready(function() {
   var game = new Game($(".board-container"), $(".display-container"));
 
