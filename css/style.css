@@ -1,5 +1,4 @@
 html, body {
-  height: 100%;
   font-family: 'Open Sans', sans-serif;
   background: #16222A; /* fallback for old browsers */
   background: -webkit-linear-gradient(to left, #16222A , #072D40); /* Chrome 10-25, Safari 5.1-6 */
@@ -50,12 +49,12 @@ html, body {
 /*Expand on large screens*/
 @media screen and (min-width: 700px) and (min-height: 800px) {
   .board-container .row {
-    width: 604px;
+    width: 454px;
   }
   .board-container .cell {
-    width: 200px;
-    height: 200px;
-    font-size: 140px;
+    width: 150px;
+    height: 150px;
+    font-size: 100px;
   }
 }
 
@@ -83,6 +82,46 @@ html, body {
   box-shadow: 2px 0px 3px -2px rgba(158, 202, 237, 0.6);
 }
 
-.white {
-  background-color: rgba(255, 255, 255, .8);
+/*Styling of controls*/
+.display-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+#message {
+  width: 100%;
+  min-height: 30px;
+  text-align: center;
+}
+.player-container {
+  margin:0;
+  width: 50%;
+  float: left;
+  text-align: center;
+}
+.player-container ul {
+  width: 300px;
+}
+.player-container li {
+  list-style-type: none;
+  display: inline-block;
+  margin: 5px;
+  font-weight: bold;
+}
+.player-container li.player-name {
+  display: block;
+  width: 100%;
+  height: 25px;
+  border: 2px solid rgba(86, 180, 239, .7);
+  border-radius: 3px;
+}
+.player-container select {
+  background-color: transparent;
+  height: 25px;
+  color: #fff;
+  border: 2px solid rgba(86, 180, 239, .7);
+  border-radius:3px;
+}
+.player-container select option {
+  background-color: transparent;
+  color:#000;
 }

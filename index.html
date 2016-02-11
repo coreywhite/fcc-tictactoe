@@ -25,29 +25,34 @@
 
     <div class="container display-container">
       <h2 id="message"></h2>
-      <ul class="players">
-        <li>
-          <ul class="player" id="p1">
-            <li class="player-name" contentEditable="true" data-player="p1">Player 1</li>
-            <li class="player-controller">
-              <select name="p1-select-controller" class="player-select-controller" data-player="p1">
-                <option value="human">Human</option>
-                <option value="easy">Easy</option>
-                <option value="normal">Normal</option>
-                <option value="hard">Hard</option>
-              </select>
-            </li>
-            <li class="player-mark">
-              <select name="p1-select-marker" class="player-select-marker" data-player="p1">
-                <option value="X" selected>X</option>
-                <option value="O">O</option>
-              </select>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <ul class="player" id="p2">
+      <div class="container player-container" id="p1">
+        <ul>
+          <li class="player-name" contentEditable="true" data-player="p1">Player 1</li>
+          <li class="player-mark">
+            <select name="p1-select-marker" class="player-select-marker" data-player="p1">
+              <option value="X" selected>X</option>
+              <option value="O">O</option>
+            </select>
+          </li>
+          <li class="player-controller">
+            <select name="p1-select-controller" class="player-select-controller" data-player="p1">
+              <option value="human">Human</option>
+              <option value="easy">Easy</option>
+              <option value="normal">Normal</option>
+              <option value="hard">Hard</option>
+            </select>
+          </li>
+        </ul>
+      </div>
+      <div class="container player-container" id="p2">
+          <ul>
             <li class="player-name" contentEditable="true" data-player="p2">Player 2</li>
+            <li class="player-mark">
+              <select name="p2-select-marker" class="player-select-marker" data-player="p2">
+                <option value="X">X</option>
+                <option value="O" selected>O</option>
+              </select>
+            </li>
             <li class="player-controller">
               <select name="p2-select-controller" class="player-select-controller" data-player="p2">
                 <option value="human">Human</option>
@@ -56,14 +61,8 @@
                 <option value="hard">Hard</option>
               </select>
             </li>
-            <li class="player-mark">
-              <select name="p2-select-marker" class="player-select-marker" data-player="p2">
-                <option value="X">X</option>
-                <option value="O" selected>O</option>
-              </select>
-            </li>
           </ul>
-        </li>
+        </div>
     </div>
 
   </div>
