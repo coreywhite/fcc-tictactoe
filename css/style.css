@@ -1,3 +1,11 @@
+*,
+*::before,
+*::after {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
 html, body {
   font-family: 'Open Sans', sans-serif;
   background: #16222A; /* fallback for old browsers */
@@ -84,7 +92,7 @@ html, body {
 
 /*Styling of controls*/
 .display-container {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
   color: #fff;
   text-overflow: clip;
@@ -115,21 +123,33 @@ html, body {
   font-weight: bold;
 }
 .player-container li.player-name {
-  min-width: 50%;
-  height: 25px;
-  border: 2px solid rgba(86, 180, 239, .7);
-  border-radius: 3px;
   display: block;
 }
+
+.player-container input,
 .player-container select {
-  background-color: transparent;
-  height: 25px;
+  margin: 0;
+  width: 100%;
   color: #fff;
-  border: 2px solid rgba(86, 180, 239, .7);
-  border-radius:3px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  background-color: transparent;
+  appearance: none;
+  box-shadow: none;
+  border-radius: 3px;
+  outline: none;
+  padding: 2px;
+  border: 5px solid rgba(86, 180, 239, .7);
+  transition: border 0.2s;
+  min-height: 40px;
+}
+.player-container input:focus,
+.player-container select:focus {
+  border: 5px solid rgba(86, 180, 239, 1);
 }
 .player-container select option {
-  background-color: transparent;
   color:#000;
 }
 
