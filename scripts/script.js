@@ -145,7 +145,7 @@ Game.prototype = {
     return !cell.hasValue();
   },
   activateCell: function(row, col) {
-    if (this.curPlayer.controller.type === "Human") {
+    if (this.curPlayer && this.curPlayer.controller.type === "Human") {
       this.move(this.board.getCell(row, col));
     }
   },
