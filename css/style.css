@@ -86,10 +86,17 @@ html, body {
 .display-container {
   max-width: 800px;
   margin: 0 auto;
+  color: #fff;
+  text-overflow: clip;
+  text-shadow:  0 0 8px  rgba(158, 202, 237, 0.6),
+                0 0 16px  rgba(158, 202, 237, 0.6),
+                0 0 24px rgba(86, 180, 239, .7),
+                0 0 32px rgba(86, 180, 239, .7),
+                0 0 40px rgba(86, 180, 239, .7)
 }
 #message {
   width: 100%;
-  min-height: 30px;
+  min-height: 2em;
   text-align: center;
 }
 .player-container {
@@ -108,10 +115,11 @@ html, body {
   font-weight: bold;
 }
 .player-container li.player-name {
-  width: 100%;
+  min-width: 50%;
   height: 25px;
   border: 2px solid rgba(86, 180, 239, .7);
   border-radius: 3px;
+  display: block;
 }
 .player-container select {
   background-color: transparent;
