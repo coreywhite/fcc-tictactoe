@@ -130,7 +130,7 @@ html, body {
 .player-container select {
   margin: 0;
   width: 100%;
-  color: #fff;
+  color: rgba(86, 180, 239, .7);
   font-family: 'Open Sans', sans-serif;
   font-weight: bold;
   font-size: 16px;
@@ -141,13 +141,14 @@ html, body {
   border-radius: 3px;
   outline: none;
   padding: 2px;
-  border: 5px solid rgba(86, 180, 239, .7);
+  border: 3px solid rgba(86, 180, 239, .7);
   transition: border 0.2s;
   min-height: 40px;
 }
 .player-container input:focus,
 .player-container select:focus {
-  border: 5px solid rgba(86, 180, 239, 1);
+  border: 3px solid rgba(86, 180, 239, 1);
+  color: rgba(86, 180, 239, 1);
 }
 .player-container select option {
   color:#000;
