@@ -111,7 +111,7 @@ function HumanController(game) {
 HumanController.prototype = Object.create(Controller.prototype);
 HumanController.prototype.constructor = HumanController;
 HumanController.prototype.takeTurn = function() {
-  this.game.display.message(this.player.name + "'s turn!");
+  this.game.display.setMessage(this.player.name + "'s turn!");
 };
 
 function Player(game, name, marker, controller) {
@@ -135,15 +135,29 @@ Player.prototype = {
 
 function Display(game, $displayContainer) {
   this.game = game;
-  this.displayContainer = $displayContainer;
+  this.$message = $displayContainer.find("#message");
+  this.p1Display = this.registerPlayerDisplay($displayContainer.find("#p1"));
+  this.p2Display = this.registerPlayerDisplay($displayContainer.find("#p2"));
 }
 Display.prototype = {
   constructor: Display,
-  message: function(msg) {
-    this.displayContainer.find("#message").html(msg);
+  registerPlayerDisplay: function($playerContainer) {
+    return {
+      $name: $playerContainer.find(".player-input-name"),
+      $marker: $playerContainer.find(".player-select-marker"),
+      $controller: $playerContainer.find(".player-select-controller")
+    };
+  },
+  setMessage: function(msg) {
+    this.$message.html(msg);
+  },
+  updatePlayerDisplay: function(player, playerDisplay) {
+    playerDisplay.$name.val(player.name);
+    playerDisplay.$marker.val(player.marker);
   },
   update: function() {
-
+    this.updatePlayerDisplay(this.game.p1, this.p1Display);
+    this.updatePlayerDisplay(this.game.p2, this.p2Display);
   }
 };
 
@@ -152,7 +166,7 @@ function Game($boardContainer, $displayContainer) {
   this.display = new Display(this, $displayContainer);
   this.p1 = new Player(this, "Player 1", "X", new HumanController(this));
   this.p2 = new Player(this, "Player 2", "O", new HumanController(this));
-  this.curPlayer = this.p1;
+  this.curPlayer = this.getPlayersByMarker("X").player;
 }
 Game.prototype = {
   constructor: Game,
@@ -160,16 +174,18 @@ Game.prototype = {
     return !cell.hasValue();
   },
   activateCell: function(row, col) {
+    //Attempt to activate or play in a cell
     if (this.curPlayer && this.curPlayer.controller.type === "Human") {
       this.move(this.board.getCell(row, col));
     }
   },
   isWinner: function(player) {
+    //Check for a winner
     var match = this.board.getMatchingSet();
     return (Array.isArray(match) && match[0].value === player.marker);
   },
   getPlayersById: function(playerId) {
-    //return player and opponent
+    //Return player and opponent by id
     if (playerId === "p1") {
       return {player: this.p1, opponent: this.p2};
     } else if (playerId === "p2") {
@@ -178,7 +194,19 @@ Game.prototype = {
       return null;
     }
   },
+  getPlayersByMarker: function(marker) {
+    //Return player and opponent by marker
+    if (this.p1.marker === marker) {
+      return {player: this.p1, opponent: this.p2};
+    } else if (this.p2.marker === marker) {
+      return {player: this.p2, opponent: this.p1};
+    } else {
+      return null;
+    }
+  },
   setPlayerMarker: function(playerId, marker) {
+    //Attempt to set a player marker to X or O. If this is a change, also
+    //toggle the other player's marker.
     var players = this.getPlayersById(playerId);
     if(players.player.setMarker(marker)) {
       players.opponent.setMarker(marker === "X" ? "O" : "X");
@@ -186,13 +214,16 @@ Game.prototype = {
     }
   },
   setPlayerName: function(playerId, name) {
+    //Set player's name
     this.getPlayersById(playerId).player.name = name;
   },
-  togglePlayer: function() {
+  nextTurn: function() {
+    //Swap the current player and take their turn
     this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
     this.curPlayer.controller.takeTurn();
   },
   move: function(cell) {
+    //Attempt to move on a specified cell
     if (!this.isValidMove(cell)) {
       return false;
     }
@@ -200,10 +231,10 @@ Game.prototype = {
     //Check for victory!
     if (this.isWinner(this.curPlayer)) {
       this.curPlayer.score++;
-      this.display.message(this.curPlayer.name + " wins!");
+      this.display.setMessage(this.curPlayer.name + " wins!");
       this.curPlayer = null;
     } else {
-      this.togglePlayer();
+      this.nextTurn();
     }
   }
 };
