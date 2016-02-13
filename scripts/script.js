@@ -114,29 +114,44 @@ HumanController.prototype.takeTurn = function() {
   this.game.display.message(this.player.name + "'s turn!");
 };
 
-function Player(name, marker, controller) {
+function Player(game, name, marker, controller) {
+  this.game = game;
   this.name = name;
   this.marker = marker;
   this.controller = controller;
   this.controller.setPlayer(this);
   this.score = 0;
 }
+Player.prototype = {
+  constructor: Player,
+  setMarker: function(marker) {
+    if (this.marker !== marker) {
+      this.marker = marker;
+      return true;
+    }
+    return false;
+  }
+}
 
-function Display($displayContainer) {
+function Display(game, $displayContainer) {
+  this.game = game;
   this.displayContainer = $displayContainer;
 }
 Display.prototype = {
   constructor: Display,
   message: function(msg) {
     this.displayContainer.find("#message").html(msg);
+  },
+  update: function() {
+
   }
 };
 
 function Game($boardContainer, $displayContainer) {
   this.board = new Grid(this, 3, $boardContainer);
-  this.display = new Display($displayContainer);
-  this.p1 = new Player("Player 1", "X", new HumanController(this));
-  this.p2 = new Player("Player 2", "O", new HumanController(this));
+  this.display = new Display(this, $displayContainer);
+  this.p1 = new Player(this, "Player 1", "X", new HumanController(this));
+  this.p2 = new Player(this, "Player 2", "O", new HumanController(this));
   this.curPlayer = this.p1;
 }
 Game.prototype = {
@@ -152,6 +167,26 @@ Game.prototype = {
   isWinner: function(player) {
     var match = this.board.getMatchingSet();
     return (Array.isArray(match) && match[0].value === player.marker);
+  },
+  getPlayersById: function(playerId) {
+    //return player and opponent
+    if (playerId === "p1") {
+      return {player: this.p1, opponent: this.p2};
+    } else if (playerId === "p2") {
+      return {player: this.p2, opponent: this.p1};
+    } else {
+      return null;
+    }
+  },
+  setPlayerMarker: function(playerId, marker) {
+    var players = this.getPlayersById(playerId);
+    if(players.player.setMarker(marker)) {
+      players.opponent.setMarker(marker === "X" ? "O" : "X");
+      this.display.update();
+    }
+  },
+  setPlayerName: function(playerId, name) {
+    this.getPlayersById(playerId).player.name = name;
   },
   togglePlayer: function() {
     this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
@@ -182,5 +217,11 @@ $(document).ready(function() {
 
   $(".board-container").on("click", ".cell", function() {
     game.activateCell($(this).data("row"), $(this).data("col"));
+  })
+  $(".player-container").on("change", ".player-input-name", function() {
+    game.setPlayerName($(this).data("player"), $(this).val());
+  })
+  $(".player-container").on("change", ".player-select-marker", function() {
+    game.setPlayerMarker($(this).data("player"), $(this).val());
   })
 });
