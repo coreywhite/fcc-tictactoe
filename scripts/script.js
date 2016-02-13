@@ -91,22 +91,19 @@ Grid.prototype = {
 /* Object defintions for Game, Player, and Controllers
 ******************************************************************************/
 
-function Controller(game, type) {
+function Controller(game, type, player) {
   this.game = game;
   this.type = type;
-  this.player = null;
+  this.player = player;
 }
 Controller.prototype = {
   constructor: Controller,
-  setPlayer: function(player) {
-    this.player = player;
-  },
   takeTurn: function() {
   }
 };
 
-function HumanController(game) {
-  Controller.call(this, game, "Human");
+function HumanController(game, player) {
+  Controller.call(this, game, "human", player);
 }
 HumanController.prototype = Object.create(Controller.prototype);
 HumanController.prototype.constructor = HumanController;
@@ -114,12 +111,22 @@ HumanController.prototype.takeTurn = function() {
   this.game.display.setMessage(this.player.name + "'s turn!");
 };
 
-function Player(game, name, marker, controller) {
+function EasyController(game, player) {
+  Controller.call(this, game, "easy", player);
+}
+EasyController.prototype = Object.create(Controller.prototype);
+EasyController.prototype.constructor = HumanController;
+EasyController.prototype.takeTurn = function() {
+  this.game.display.setMessage(this.player.name + "'s turn! Easy!");
+};
+
+
+function Player(game, name, marker, controllerType) {
   this.game = game;
   this.name = name;
   this.marker = marker;
-  this.controller = controller;
-  this.controller.setPlayer(this);
+  this.controller = null;
+  this.setController(controllerType);
   this.score = 0;
 }
 Player.prototype = {
@@ -130,6 +137,15 @@ Player.prototype = {
       return true;
     }
     return false;
+  },
+  setController: function(controllerType) {
+    if (controllerType === "human") {
+      this.controller = new HumanController(this.game, this);
+    } else if (controllerType === "easy") {
+      this.controller = new EasyController(this.game, this);
+    } else {
+      this.controller = null;
+    }
   }
 }
 
@@ -164,8 +180,8 @@ Display.prototype = {
 function Game($boardContainer, $displayContainer) {
   this.board = new Grid(this, 3, $boardContainer);
   this.display = new Display(this, $displayContainer);
-  this.p1 = new Player(this, "Player 1", "X", new HumanController(this));
-  this.p2 = new Player(this, "Player 2", "O", new HumanController(this));
+  this.p1 = new Player(this, "Player 1", "X", "human");
+  this.p2 = new Player(this, "Player 2", "O", "human");
   this.curPlayer = this.getPlayersByMarker("X").player;
 }
 Game.prototype = {
@@ -175,7 +191,7 @@ Game.prototype = {
   },
   activateCell: function(row, col) {
     //Attempt to activate or play in a cell
-    if (this.curPlayer && this.curPlayer.controller.type === "Human") {
+    if (this.curPlayer && this.curPlayer.controller.type === "human") {
       this.move(this.board.getCell(row, col));
     }
   },
@@ -217,6 +233,15 @@ Game.prototype = {
     //Set player's name
     this.getPlayersById(playerId).player.name = name;
   },
+  setPlayerController: function(playerId, controllerType) {
+    //Set player's controller
+    var players = this.getPlayersById(playerId);
+    players.player.setController(controllerType);
+    //If the current player's controller has changed, take its turn.
+    if(players.player === this.curPlayer) {
+      this.curPlayer.controller.takeTurn();
+    }
+  },
   nextTurn: function() {
     //Swap the current player and take their turn
     this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
@@ -248,11 +273,15 @@ $(document).ready(function() {
 
   $(".board-container").on("click", ".cell", function() {
     game.activateCell($(this).data("row"), $(this).data("col"));
-  })
+  });
+
   $(".player-container").on("change", ".player-input-name", function() {
     game.setPlayerName($(this).data("player"), $(this).val());
-  })
+  });
   $(".player-container").on("change", ".player-select-marker", function() {
     game.setPlayerMarker($(this).data("player"), $(this).val());
-  })
+  });
+  $(".player-container").on("change", ".player-select-controller", function() {
+    game.setPlayerController($(this).data("player"), $(this).val());
+  });
 });
