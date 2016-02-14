@@ -165,11 +165,11 @@ html, body {
 /*On mobile screens in landscape orientation, move the display to the side*/
 @media screen and (max-height: 700px) and (orientation: landscape) {
   .board-container {
-    width: 50%;
+    width: 60%;
     float: left;
   }
   .display-container {
-    width: 50%;
+    width: 40%;
     float: left;
   }
 }
