@@ -164,34 +164,6 @@ Player.prototype = {
   }
 }
 
-function Display(game, $displayContainer) {
-  this.game = game;
-  this.$message = $displayContainer.find("#message");
-  this.p1Display = this.registerPlayerDisplay($displayContainer.find("#p1"));
-  this.p2Display = this.registerPlayerDisplay($displayContainer.find("#p2"));
-}
-Display.prototype = {
-  constructor: Display,
-  registerPlayerDisplay: function($playerContainer) {
-    return {
-      $name: $playerContainer.find(".player-input-name"),
-      $marker: $playerContainer.find(".player-select-marker"),
-      $controller: $playerContainer.find(".player-select-controller")
-    };
-  },
-  setMessage: function(msg) {
-    this.$message.html(msg);
-  },
-  updatePlayerDisplay: function(player, playerDisplay) {
-    playerDisplay.$name.val(player.name);
-    playerDisplay.$marker.val(player.marker);
-  },
-  update: function() {
-    this.updatePlayerDisplay(this.game.p1, this.p1Display);
-    this.updatePlayerDisplay(this.game.p2, this.p2Display);
-  }
-};
-
 function Game($boardContainer, $displayContainer) {
   this.board = new Grid(this, 3, $boardContainer);
   this.display = new Display(this, $displayContainer);
@@ -283,6 +255,37 @@ Game.prototype = {
   }
 };
 
+/******************************************************************************
+/* Set up for the display handler, to link game objects to UI
+******************************************************************************/
+
+function Display(game, $displayContainer) {
+  this.game = game;
+  this.$message = $displayContainer.find("#message");
+  this.p1Display = this.registerPlayerDisplay($displayContainer.find("#p1"));
+  this.p2Display = this.registerPlayerDisplay($displayContainer.find("#p2"));
+}
+Display.prototype = {
+  constructor: Display,
+  registerPlayerDisplay: function($playerContainer) {
+    return {
+      $name: $playerContainer.find(".player-input-name"),
+      $marker: $playerContainer.find(".player-select-marker"),
+      $controller: $playerContainer.find(".player-select-controller")
+    };
+  },
+  setMessage: function(msg) {
+    this.$message.html(msg);
+  },
+  updatePlayerDisplay: function(player, playerDisplay) {
+    playerDisplay.$name.val(player.name);
+    playerDisplay.$marker.val(player.marker);
+  },
+  update: function() {
+    this.updatePlayerDisplay(this.game.p1, this.p1Display);
+    this.updatePlayerDisplay(this.game.p2, this.p2Display);
+  }
+};
 
 /******************************************************************************
 /* Run code when page is ready to instantiate objects and hook up the UI
