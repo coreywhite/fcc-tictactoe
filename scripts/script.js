@@ -168,8 +168,9 @@ function Game($boardContainer, $displayContainer) {
   this.board = new Grid(this, 3, $boardContainer);
   this.display = new Display(this, $displayContainer);
   this.p1 = new Player(this, "Player 1", "X", "human");
-  this.p2 = new Player(this, "Player 2", "O", "human");
+  this.p2 = new Player(this, "Player 2", "O", "easy");
   this.curPlayer = this.getPlayersByMarker("X").player;
+  this.display.update();
 }
 Game.prototype = {
   constructor: Game,
