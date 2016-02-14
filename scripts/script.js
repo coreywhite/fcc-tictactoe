@@ -64,12 +64,23 @@ Grid.prototype = {
       return row[i === 0 ? idx : row.length - idx - 1];
     });
   },
+  getEmptyCells: function() {
+    var emptyCells = [];
+    for (var i = 0; i < this.cells.length; i++) {
+      for (var j = 0; j < this.cells[i].length; j++) {
+        if (!this.cells[i][j].hasValue()) {
+          emptyCells.push(this.cells[i][j]);
+        }
+      }
+    }
+    return emptyCells;
+  },
   getMatchingSet: function() {
     //Return a row, column, or main diagonal for which all cells match
     function allMatch(arr) {
-      var first = arr[0].value;
+      var first = arr[0];
       return arr.every(function(el) {
-        return first !== null && el.value === first;
+        return first.hasValue() && el.value === first.value;
       });
     }
     for (var i = 0; i < this.size; i++) {
@@ -102,6 +113,7 @@ Controller.prototype = {
   }
 };
 
+//The human controller waits for human input (grid clicks)
 function HumanController(game, player) {
   Controller.call(this, game, "human", player);
 }
@@ -111,15 +123,18 @@ HumanController.prototype.takeTurn = function() {
   this.game.display.setMessage(this.player.name + "'s turn!");
 };
 
+//The easy controller plays randomly
 function EasyController(game, player) {
   Controller.call(this, game, "easy", player);
 }
 EasyController.prototype = Object.create(Controller.prototype);
 EasyController.prototype.constructor = HumanController;
 EasyController.prototype.takeTurn = function() {
-  this.game.display.setMessage(this.player.name + "'s turn! Easy!");
+  var moves = this.game.board.getEmptyCells();
+  if (moves.length > 0) {
+    this.game.move(moves[Math.floor(Math.random()*moves.length)]);
+  }
 };
-
 
 function Player(game, name, marker, controllerType) {
   this.game = game;
@@ -246,6 +261,10 @@ Game.prototype = {
     //Swap the current player and take their turn
     this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
     this.curPlayer.controller.takeTurn();
+  },
+  draw: function() {
+    this.curPlayer = null;
+    this.display.setMessage("It's a draw.");
   },
   move: function(cell) {
     //Attempt to move on a specified cell
