@@ -231,13 +231,21 @@ Game.prototype = {
     }
   },
   nextTurn: function() {
-    //Swap the current player and take their turn
-    this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
-    this.curPlayer.controller.takeTurn();
-  },
-  draw: function() {
-    this.curPlayer = null;
-    this.display.setMessage("It's a draw.");
+    //Check game state
+    if (this.isWinner(this.curPlayer)) {
+      //Victory!
+      this.curPlayer.score++;
+      this.display.setMessage(this.curPlayer.name + " wins!");
+      this.curPlayer = null;
+    } else if (this.board.getEmptyCells().length === 0) {
+      //Draw
+      this.curPlayer = null;
+      this.display.setMessage("It's a draw.");
+    } else {
+      //Still playing -- toggle the current player and take its turn
+      this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
+      this.curPlayer.controller.takeTurn();
+    }
   },
   move: function(cell) {
     //Attempt to move on a specified cell
@@ -245,14 +253,7 @@ Game.prototype = {
       return false;
     }
     cell.setValue(this.curPlayer.marker);
-    //Check for victory!
-    if (this.isWinner(this.curPlayer)) {
-      this.curPlayer.score++;
-      this.display.setMessage(this.curPlayer.name + " wins!");
-      this.curPlayer = null;
-    } else {
-      this.nextTurn();
-    }
+    this.nextTurn();
   }
 };
 
