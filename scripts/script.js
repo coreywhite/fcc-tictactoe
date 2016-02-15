@@ -1,11 +1,11 @@
 /******************************************************************************
 /* Object definitions for grid and cells
 ******************************************************************************/
-function Cell(game, row, col, $element) {
+function Cell(game, row, col) {
   this.game = game;
   this.row = row;
   this.col = col;
-  this.$element = $element;
+  this.$element = null;
   this.value = null;
 }
 Cell.prototype = {
@@ -15,36 +15,30 @@ Cell.prototype = {
   },
   setValue: function(mark) {
     this.value = mark;
-    this.$element.text(this.value);
+    if (this.$element) {
+      this.$element.text(this.value);
+    }
+  },
+  setDisplay: function($element) {
+    this.$element = $element;
   }
 };
 
-function Grid(game, size, $container) {
+function Grid(game, size) {
   this.game = game;
   this.size = size;
-  this.container = $container;
   this.cells = [];
   //Initialize the cells array and render the grid
   for (var i = 0; i < this.size; i++) {
     //Create row
     this.cells[i] = [];
-    var $row = $("<div />", {
-      class: "row",
-      "data-row": i
-    });
     //Fill columns with cells
     for (var j = 0; j < this.size; j++) {
-      var $cell = $("<div />", {
-        class: "cell",
-        "data-row": i,
-        "data-col": j
-      });
-      $row.append($cell);
-      this.cells[i][j] = new Cell(this.game, i, j, $cell);
+      this.cells[i][j] = new Cell(this.game, i, j);
     }
-    this.container.append($row);
   }
 }
+
 Grid.prototype = {
   constructor: Grid,
   getCell: function(row, col) {
@@ -95,6 +89,29 @@ Grid.prototype = {
       }
     }
     return null;
+  },
+  renderDisplay: function($displayContainer) {
+    //Create DOM elements to display the grid
+    this.$displayContainer = $displayContainer;
+    for (var i = 0; i < this.cells.length; i++) {
+      //Create row element
+      var $row = $("<div />", {
+        class: "row",
+        "data-row": i
+      });
+      for (var j = 0; j < this.cells[0].length; j++) {
+        //Fill columns with cells
+        var $cell = $("<div />", {
+          class: "cell",
+          "data-row": i,
+          "data-col": j
+        });
+        $row.append($cell);
+        //Store a reference to the display in the grid cell
+        this.cells[i][j].setDisplay($cell);
+      }
+      this.$displayContainer.append($row);
+    }
   }
 };
 
@@ -178,11 +195,12 @@ Player.prototype = {
 }
 
 function Game($boardContainer, $displayContainer) {
-  this.board = new Grid(this, 3, $boardContainer);
+  this.board = new Grid(this, 3);
   this.display = new Display(this, $displayContainer);
   this.p1 = new Player(this, "Player 1", "X", "human");
   this.p2 = new Player(this, "Player 2", "O", "easy");
   this.curPlayer = this.getPlayersByMarker("X").player;
+  this.board.renderDisplay($boardContainer);
   this.display.update();
 }
 Game.prototype = {
