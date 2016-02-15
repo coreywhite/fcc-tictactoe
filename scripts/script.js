@@ -1,8 +1,7 @@
 /******************************************************************************
 /* Object definitions for grid and cells
 ******************************************************************************/
-function Cell(game, row, col) {
-  this.game = game;
+function Cell(row, col) {
   this.row = row;
   this.col = col;
   this.$element = null;
@@ -24,8 +23,7 @@ Cell.prototype = {
   }
 };
 
-function Grid(game, size) {
-  this.game = game;
+function Grid(size) {
   this.size = size;
   this.cells = [];
   //Initialize the cells array and render the grid
@@ -34,7 +32,7 @@ function Grid(game, size) {
     this.cells[i] = [];
     //Fill columns with cells
     for (var j = 0; j < this.size; j++) {
-      this.cells[i][j] = new Cell(this.game, i, j);
+      this.cells[i][j] = new Cell(i, j);
     }
   }
 }
@@ -195,7 +193,7 @@ Player.prototype = {
 }
 
 function Game($boardContainer, $displayContainer) {
-  this.board = new Grid(this, 3);
+  this.board = new Grid(3);
   this.display = new Display(this, $displayContainer);
   this.p1 = new Player(this, "Player 1", "X", "human");
   this.p2 = new Player(this, "Player 2", "O", "easy");
