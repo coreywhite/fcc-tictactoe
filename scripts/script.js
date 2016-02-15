@@ -20,6 +20,7 @@ Cell.prototype = {
   },
   setDisplay: function($element) {
     this.$element = $element;
+    this.$element.text(this.value);
   }
 };
 
@@ -87,6 +88,16 @@ Grid.prototype = {
       }
     }
     return null;
+  },
+  clone: function() {
+    //Create a deep clone of a grid, including its cells
+    var clone = new Grid(this.size);
+    for (var i = 0; i < clone.cells.length; i++) {
+      for (var j = 0; j < clone.cells[0].length; j++) {
+        clone.cells[i][j].setValue(this.cells[i][j].value);
+      }
+    }
+    return clone;
   },
   renderDisplay: function($displayContainer) {
     //Create DOM elements to display the grid
