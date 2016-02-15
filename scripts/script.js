@@ -128,12 +128,23 @@ function EasyController(game, player) {
   Controller.call(this, game, "easy", player);
 }
 EasyController.prototype = Object.create(Controller.prototype);
-EasyController.prototype.constructor = HumanController;
+EasyController.prototype.constructor = EasyController;
 EasyController.prototype.takeTurn = function() {
   var moves = this.game.board.getEmptyCells();
   if (moves.length > 0) {
     this.game.move(moves[Math.floor(Math.random()*moves.length)]);
   }
+};
+
+//The "normal" controller attempts to win or block the opponent from winning
+function NormalController(game, player) {
+  Controller.call(this, game, "normal", player);
+}
+NormalController.prototype = Object.create(Controller.prototype);
+NormalController.prototype.constructor = NormalController;
+NormalController.prototype.takeTurn = function() {
+  var moves = this.game.board.getEmptyCells();
+
 };
 
 function Player(game, name, marker, controllerType) {
@@ -158,6 +169,8 @@ Player.prototype = {
       this.controller = new HumanController(this.game, this);
     } else if (controllerType === "easy") {
       this.controller = new EasyController(this.game, this);
+    } else if (controllerType === "normal") {
+      this.controller = new NormalController(this.game, this);
     } else {
       this.controller = null;
     }
