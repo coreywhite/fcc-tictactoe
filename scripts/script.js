@@ -147,6 +147,7 @@ HumanController.prototype = Object.create(Controller.prototype);
 HumanController.prototype.constructor = HumanController;
 HumanController.prototype.takeTurn = function() {
   this.game.display.setMessage(this.player.name + "'s turn!");
+  return true;
 };
 
 //The easy controller plays randomly
@@ -159,22 +160,48 @@ EasyController.prototype.takeTurn = function() {
   var moves = this.game.board.getEmptyCells();
   if (moves.length > 0) {
     this.game.move(moves[Math.floor(Math.random()*moves.length)]);
+    return true;
   }
 };
 
-//The "normal" controller attempts to win or block the opponent from winning
+//The "normal" controller attempts to win or block the opponent from winning,
+//but only looks one move ahead.
 function NormalController(game, player) {
   Controller.call(this, game, "normal", player);
 }
 NormalController.prototype = Object.create(Controller.prototype);
 NormalController.prototype.constructor = NormalController;
 NormalController.prototype.takeTurn = function() {
+  var players = this.game.getPlayersById(this.player.id);
   var moves = this.game.board.getEmptyCells();
-
+  //If it is possible to win this turn, do so:
+  for (var i = 0; i < moves.length; i++) {
+    var testBoard = this.game.board.clone();
+    testBoard.getCell(moves[i].row, moves[i].col).setValue(players.player.marker);
+    if (this.game.isWinner(testBoard, players.player)) {
+      this.game.move(moves[i]);
+      return true;
+    }
+  }
+  //If the opponent will be able to win next turn, block them:
+  for (var i = 0; i < moves.length; i++) {
+    var testBoard = this.game.board.clone();
+    testBoard.getCell(moves[i].row, moves[i].col).setValue(players.opponent.marker);
+    if (this.game.isWinner(testBoard, players.opponent)) {
+      this.game.move(moves[i]);
+      return true;
+    }
+  }
+  //Otherwise, move randomly:
+  if (moves.length > 0) {
+    this.game.move(moves[Math.floor(Math.random()*moves.length)]);
+    return true;
+  }
 };
 
-function Player(game, name, marker, controllerType) {
+function Player(game, id, name, marker, controllerType) {
   this.game = game;
+  this.id = id;
   this.name = name;
   this.marker = marker;
   this.controller = null;
@@ -206,8 +233,8 @@ Player.prototype = {
 function Game($boardContainer, $displayContainer) {
   this.board = new Grid(3);
   this.display = new Display(this, $displayContainer);
-  this.p1 = new Player(this, "Player 1", "X", "human");
-  this.p2 = new Player(this, "Player 2", "O", "easy");
+  this.p1 = new Player(this, "p1", "Player 1", "X", "human");
+  this.p2 = new Player(this, "p2", "Player 2", "O", "easy");
   this.curPlayer = this.getPlayersByMarker("X").player;
   this.board.renderDisplay($boardContainer);
   this.display.update();
@@ -223,9 +250,9 @@ Game.prototype = {
       this.move(this.board.getCell(row, col));
     }
   },
-  isWinner: function(player) {
+  isWinner: function(board, player) {
     //Check for a winner
-    var match = this.board.getMatchingSet();
+    var match = board.getMatchingSet();
     return (Array.isArray(match) && match[0].value === player.marker);
   },
   getPlayersById: function(playerId) {
@@ -272,7 +299,7 @@ Game.prototype = {
   },
   nextTurn: function() {
     //Check game state
-    if (this.isWinner(this.curPlayer)) {
+    if (this.isWinner(this.board, this.curPlayer)) {
       //Victory!
       this.curPlayer.score++;
       this.display.setMessage(this.curPlayer.name + " wins!");
