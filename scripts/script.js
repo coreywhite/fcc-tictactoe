@@ -199,6 +199,97 @@ NormalController.prototype.takeTurn = function() {
   }
 };
 
+//The "hard" controller implements the Minimax algorithm to play perfectly
+function HardController(game, player) {
+  Controller.call(this, game, "hard", player);
+}
+HardController.prototype = Object.create(Controller.prototype);
+HardController.prototype.constructor = HardController;
+HardController.prototype.takeTurn = function() {
+  var players = this.game.getPlayersById(this.player.id);
+  this.move = null;
+  //Call minimax, which will run recursively and set this.move to a value
+  this.minimax(this.game.board.clone(), players, 0);
+  //If successful, actually make the selected move
+  if (this.move) {
+    this.game.move(this.move);
+  }
+};
+HardController.prototype.gradeBoard = function(board) {
+  //Assign a "grade" to the board, returning 1 for a win, -1 for loss, and 0
+  //for a draw. If the board is not in a terminal state, return null.
+  var moves = board.getEmptyCells();
+  if (this.game.isWinner(board, this.player)) {
+    return 1;
+  } else if (this.game.isWinner(board, this.player.getOpponent())) {
+    return -1;
+  } else if (moves.length === 0){
+    return 0;
+  } else {
+    return null;
+  }
+};
+HardController.prototype.minimax = function(board, players, depth) {
+  //Minimax is a recursive algorithm that "grades" the boards resulting from all
+  //possible moves. The current player seeks to maximize the grade, while the
+  //opponent seeks to minimize it.
+  //First, check if the game is complete and just return the grade if so:
+  var grade = this.gradeBoard(board);
+  if (grade !== null) {
+    return {grade: grade, depth: depth};
+  }
+  //Otherwise, prepare to over all available moves
+  var moves = board.getEmptyCells();
+  var grades = [];
+  //Swap player and opponent for the next turn
+  var nextPlayers = {player: players.opponent, opponent: players.player};
+  for (var i = 0; i < moves.length; i++) {
+    //Create a new board and take the current move
+    var nextBoard = board.clone();
+    var nextMove = nextBoard.getCell(moves[i].row, moves[i].col);
+    nextMove.setValue(players.player.marker);
+    //Recursively call minimax on the new state of the board
+    grades.push(this.minimax(nextBoard, nextPlayers, depth + 1));
+  }
+  //Choose the "best" of the available moves based on their grades
+  var bestMove = this.chooseGradedMove(moves, grades, players);
+  //If we are currently grading the original (depth 0) board, store the move
+  if (depth === 0) {
+    this.move = this.game.board.getCell(bestMove.row, bestMove.col);
+  }
+  //Return the best grade and depth
+  return {grade: bestMove.grade, depth: bestMove.depth};
+};
+HardController.prototype.chooseGradedMove = function(moves, grades, players){
+  //The current player seeks to maximize the grade, whereas the opponent seeks
+  //to minimize it. Both players seek to maximize depth (prolong the game).
+  if (players.player === this.player) {
+    var best = grades.reduce(function(prev, cur) {
+      if ((cur.grade > prev.grade) || (cur.grade === prev.grade && cur.depth > prev.depth)) {
+        return cur;
+      } else {
+        return prev;
+      }
+    });
+  } else {
+    var best = grades.reduce(function(prev, cur) {
+      if ((cur.grade < prev.grade) || (cur.grade === prev.grade && cur.depth > prev.depth)) {
+        return cur;
+      } else {
+        return prev;
+      }
+    });
+  }
+  //Randomly select one of the possible moves with the best grade and depth
+  var possibleMoves = moves.filter(function(move, idx) {
+    return grades[idx].grade === best.grade && grades[idx].depth === best.depth;
+  });
+  var move = possibleMoves[Math.floor(Math.random()*possibleMoves.length)];
+  return {row: move.row, col: move.col, grade: best.grade, depth: best.depth};
+};
+
+
+
 function Player(game, id, name, marker, controllerType) {
   this.game = game;
   this.id = id;
@@ -224,9 +315,14 @@ Player.prototype = {
       this.controller = new EasyController(this.game, this);
     } else if (controllerType === "normal") {
       this.controller = new NormalController(this.game, this);
+    } else if (controllerType === "hard") {
+      this.controller = new HardController(this.game, this);
     } else {
       this.controller = null;
     }
+  },
+  getOpponent: function() {
+    return this.game.getPlayersById(this.id).opponent;
   }
 }
 
@@ -234,7 +330,7 @@ function Game($boardContainer, $displayContainer) {
   this.board = new Grid(3);
   this.display = new Display(this, $displayContainer);
   this.p1 = new Player(this, "p1", "Player 1", "X", "human");
-  this.p2 = new Player(this, "p2", "Player 2", "O", "easy");
+  this.p2 = new Player(this, "p2", "Player 2", "O", "hard");
   this.curPlayer = this.getPlayersByMarker("X").player;
   this.board.renderDisplay($boardContainer);
   this.display.update();
