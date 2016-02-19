@@ -1,6 +1,8 @@
 /******************************************************************************
 /* Object definitions for grid and cells
 ******************************************************************************/
+//A cell is an individual node in the grid. It can optionally be associated
+//to a DOM element for display purposes.
 function Cell(row, col) {
   this.row = row;
   this.col = col;
@@ -24,6 +26,7 @@ Cell.prototype = {
   }
 };
 
+//A grid is a collection of cells arranged in a square of rows and columns.
 function Grid(size) {
   this.size = size;
   this.cells = [];
@@ -37,7 +40,6 @@ function Grid(size) {
     }
   }
 }
-
 Grid.prototype = {
   constructor: Grid,
   getCell: function(row, col) {
@@ -76,6 +78,8 @@ Grid.prototype = {
         return first.hasValue() && el.value === first.value;
       });
     }
+    //Iterate over all rows, columns, and diagonals, returning the first
+    //matching set encountered
     for (var i = 0; i < this.size; i++) {
       if (allMatch(this.getRow(i))) {
         return this.getRow(i);
@@ -90,7 +94,7 @@ Grid.prototype = {
     return null;
   },
   clone: function() {
-    //Create a deep clone of a grid, including its cells
+    //Create a deep clone of a grid, including clones of its cells
     var clone = new Grid(this.size);
     for (var i = 0; i < clone.cells.length; i++) {
       for (var j = 0; j < clone.cells[0].length; j++) {
@@ -119,6 +123,7 @@ Grid.prototype = {
         //Store a reference to the display in the grid cell
         this.cells[i][j].setDisplay($cell);
       }
+      //Add the row to the DOM
       this.$displayContainer.append($row);
     }
   }
@@ -128,6 +133,7 @@ Grid.prototype = {
 /* Object defintions for Game, Player, and Controllers
 ******************************************************************************/
 
+//A controller determines the behavior of a player, selecting a move
 function Controller(game, type, player) {
   this.game = game;
   this.type = type;
@@ -139,7 +145,7 @@ Controller.prototype = {
   }
 };
 
-//The human controller waits for human input (grid clicks)
+//The human controller waits for human input (grid clicks).
 function HumanController(game, player) {
   Controller.call(this, game, "human", player);
 }
@@ -238,7 +244,7 @@ HardController.prototype.minimax = function(board, players, depth) {
   if (grade !== null) {
     return {grade: grade, depth: depth};
   }
-  //Otherwise, prepare to over all available moves
+  //Otherwise, prepare to iterate over all available moves
   var moves = board.getEmptyCells();
   var grades = [];
   //Swap player and opponent for the next turn
@@ -265,7 +271,7 @@ HardController.prototype.chooseGradedMove = function(moves, grades, players){
   //to minimize it. Both players seek to maximize depth (prolong the game).
   if (players.player === this.player) {
     var best = grades.reduce(function(prev, cur) {
-      if ((cur.grade > prev.grade) || (cur.grade === prev.grade && cur.depth > prev.depth)) {
+      if (cur.grade > prev.grade || (cur.grade === prev.grade && cur.depth > prev.depth)) {
         return cur;
       } else {
         return prev;
@@ -273,7 +279,7 @@ HardController.prototype.chooseGradedMove = function(moves, grades, players){
     });
   } else {
     var best = grades.reduce(function(prev, cur) {
-      if ((cur.grade < prev.grade) || (cur.grade === prev.grade && cur.depth > prev.depth)) {
+      if (cur.grade < prev.grade || (cur.grade === prev.grade && cur.depth > prev.depth)) {
         return cur;
       } else {
         return prev;
