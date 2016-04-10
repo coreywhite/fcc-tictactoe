@@ -1,6 +1,7 @@
 /******************************************************************************
 /* Object definitions for grid and cells
 ******************************************************************************/
+
 //A cell is an individual node in the grid. It can optionally be associated
 //to a DOM element for display purposes.
 function Cell(row, col) {
@@ -129,11 +130,12 @@ Grid.prototype = {
   }
 };
 
+
 /******************************************************************************
-/* Object defintions for Game, Player, and Controllers
+/* Object definitions for Game, Player, and Controllers
 ******************************************************************************/
 
-//A controller determines the behavior of a player, selecting a move
+//A controller determines the behavior of a player and selects moves
 function Controller(game, type, player) {
   this.game = game;
   this.type = type;
@@ -295,7 +297,7 @@ HardController.prototype.chooseGradedMove = function(moves, grades, players){
 };
 
 
-
+//The Player object represents a player in the game (either human or AI)
 function Player(game, id, name, marker, controllerType) {
   this.game = game;
   this.id = id;
@@ -332,6 +334,8 @@ Player.prototype = {
   }
 }
 
+//The Game object manages the game, owning player and board objects, along
+//with a display handler to link between the game models and the GUI.
 function Game($boardContainer, $displayContainer) {
   this.board = new Grid(3);
   this.display = new Display(this, $displayContainer);
@@ -344,6 +348,7 @@ function Game($boardContainer, $displayContainer) {
 Game.prototype = {
   constructor: Game,
   isValidMove: function(cell) {
+    //Check whether it is possible to move on a particular cell
     return !cell.hasValue();
   },
   activateCell: function(row, col) {
@@ -411,7 +416,7 @@ Game.prototype = {
       this.curPlayer = null;
       this.display.setMessage("It's a draw.");
     } else {
-      //Still playing -- toggle the current player and take its turn
+      //Still playing, so toggle the current player and let it take its turn
       this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
       this.curPlayer.controller.takeTurn();
     }
