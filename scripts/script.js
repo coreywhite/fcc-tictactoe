@@ -107,6 +107,7 @@ Grid.prototype = {
   renderDisplay: function($displayContainer) {
     //Create DOM elements to display the grid
     this.$displayContainer = $displayContainer;
+    this.$displayContainer.empty();
     for (var i = 0; i < this.cells.length; i++) {
       //Create row element
       var $row = $("<div />", {
@@ -337,16 +338,23 @@ Player.prototype = {
 //The Game object manages the game, owning player and board objects, along
 //with a display handler to link between the game models and the GUI.
 function Game($boardContainer, $displayContainer) {
-  this.board = new Grid(3);
+  this.$boardContainer = $boardContainer;
+  this.$displayContainer = $displayContainer;
   this.display = new Display(this, $displayContainer);
   this.p1 = new Player(this, "p1", "Player 1", "X", "human");
   this.p2 = new Player(this, "p2", "Player 2", "O", "hard");
-  this.curPlayer = this.getPlayersByMarker("X").player;
-  this.board.renderDisplay($boardContainer);
-  this.display.update();
+  this.startMatch();
 }
 Game.prototype = {
   constructor: Game,
+  startMatch: function() {
+    //Start a new match
+    this.curPlayer = this.getPlayersByMarker("X").player;
+    //Replace the current board with a new one
+    this.board = new Grid(3);
+    this.board.renderDisplay(this.$boardContainer);
+    this.display.update();
+  },
   isValidMove: function(cell) {
     //Check whether it is possible to move on a particular cell
     return !cell.hasValue();
@@ -409,12 +417,10 @@ Game.prototype = {
     if (this.isWinner(this.board, this.curPlayer)) {
       //Victory!
       this.curPlayer.score++;
-      this.display.setMessage(this.curPlayer.name + " wins!");
-      this.curPlayer = null;
+      this.endGame(this.curPlayer.name + " wins!");
     } else if (this.board.getEmptyCells().length === 0) {
       //Draw
-      this.curPlayer = null;
-      this.display.setMessage("It's a draw.");
+      this.endGame("It's a draw.");
     } else {
       //Still playing, so toggle the current player and let it take its turn
       this.curPlayer = (this.curPlayer === this.p1) ? this.p2 : this.p1;
@@ -428,6 +434,11 @@ Game.prototype = {
     }
     cell.setValue(this.curPlayer.marker);
     this.nextTurn();
+  },
+  endGame: function(message) {
+    this.curPlayer = null;
+    this.display.setMessage(message);
+    this.display.newGameModalOpen();
   }
 };
 
@@ -460,6 +471,22 @@ Display.prototype = {
   update: function() {
     this.updatePlayerDisplay(this.game.p1, this.p1Display);
     this.updatePlayerDisplay(this.game.p2, this.p2Display);
+  },
+  newGameModalOpen: function() {
+    var winW = $(window).width();
+    var winH = $(window).height();
+    var eleW = $('.newGameModalDialog').width();
+    var eleH = $('.newGameModalDialog').height();
+    eleH = (winH - eleH)/2;
+    eleW = (winW - eleW)/2;
+    $('.newGameModalDialog').css('marginTop', eleH);
+    $('.newGameModalDialog').css('marginLeft', eleW);
+    $('.backgroundWrapper').fadeIn();
+    $('.newGameModalDialog').fadeIn();
+  },
+  newGameModalClose: function() {
+    $('.backgroundWrapper').fadeOut();
+    $('.'+ className).fadeOut();
   }
 };
 
@@ -467,7 +494,12 @@ Display.prototype = {
 /* Run code when page is ready to instantiate objects and hook up the UI
 ******************************************************************************/
 $(document).ready(function() {
-  var game = new Game($(".board-container"), $(".display-container"));
+  var game = new Game($(".board-container"), $(".display-container"), $("#newGameModal"));
+
+  $("#reset-button").on("click", function(event) {
+    event.preventDefault();
+    game.startMatch();
+  });
 
   $(".board-container").on("click", ".cell", function() {
     game.activateCell($(this).data("row"), $(this).data("col"));
