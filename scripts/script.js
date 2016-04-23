@@ -354,6 +354,8 @@ Game.prototype = {
     this.board = new Grid(3);
     this.board.renderDisplay(this.$boardContainer);
     this.display.update();
+    //Close the modal restart display if it is open
+    this.display.newGameModalClose();
   },
   isValidMove: function(cell) {
     //Check whether it is possible to move on a particular cell
@@ -438,7 +440,7 @@ Game.prototype = {
   endGame: function(message) {
     this.curPlayer = null;
     this.display.setMessage(message);
-    this.display.newGameModalOpen();
+    this.display.newGameModalOpen(this.$boardContainer);
   }
 };
 
@@ -472,21 +474,20 @@ Display.prototype = {
     this.updatePlayerDisplay(this.game.p1, this.p1Display);
     this.updatePlayerDisplay(this.game.p2, this.p2Display);
   },
-  newGameModalOpen: function() {
-    var winW = $(window).width();
-    var winH = $(window).height();
-    var eleW = $('.newGameModalDialog').width();
-    var eleH = $('.newGameModalDialog').height();
-    eleH = (winH - eleH)/2;
-    eleW = (winW - eleW)/2;
-    $('.newGameModalDialog').css('marginTop', eleH);
-    $('.newGameModalDialog').css('marginLeft', eleW);
+  newGameModalOpen: function($boardContainer) {
+    boardWidth = $boardContainer.width();
+    boardHeight = $boardContainer.height();
+    boardPos = $boardContainer.position();
+    $('.newGameModalDialog').css({
+      left: boardPos.left + boardWidth / 2 - 150,
+      top: boardPos.top + boardHeight / 2 - 100
+    });
     $('.backgroundWrapper').fadeIn();
     $('.newGameModalDialog').fadeIn();
   },
   newGameModalClose: function() {
     $('.backgroundWrapper').fadeOut();
-    $('.'+ className).fadeOut();
+    $('.newGameModalDialog').fadeOut();
   }
 };
 
