@@ -31,6 +31,8 @@ html, body {
   margin: 0 auto;
 }
 
+
+
 /*Display the cells where player markers will go. Default to small size.*/
 .board-container .cell {
   display: table-cell;
@@ -54,17 +56,7 @@ html, body {
   background: radial-gradient(ellipse at center, rgba(158, 202, 237, 0.2) 0%,rgba(158, 202, 237, 0) 60%);
 }
 
-/*Expand on large screens*/
-@media screen and (min-width: 700px) and (min-height: 600px) {
-  .board-container .row {
-    width: 454px;
-  }
-  .board-container .cell {
-    width: 150px;
-    height: 150px;
-    font-size: 100px;
-  }
-}
+
 
 /*Borders on middle row and column*/
 .board-container .row[data-row="1"] {
@@ -154,26 +146,6 @@ html, body {
   color:#000;
 }
 
-/*Display players side-by-side on large screens*/
-@media screen and (min-width: 700px) and (min-height: 600px) {
-  .player-container {
-    width: 50%;
-    float: left;
-  }
-}
-
-/*On mobile screens in landscape orientation, move the display to the side*/
-@media screen and (max-height: 700px) and (orientation: landscape) {
-  .board-container {
-    width: 60%;
-    float: left;
-  }
-  .display-container {
-    width: 40%;
-    float: left;
-  }
-}
-
 /*Modal dialog to start a new game*/
 .backgroundWrapper{
     display:none;
@@ -211,4 +183,67 @@ html, body {
 .newGameModalDialog button:active{
   border: 3px solid rgba(86, 180, 239, 1);
   color: rgba(86, 180, 239, 1);
+}
+
+
+/*****************************************************************************/
+/* Responsive adjustments */
+/*****************************************************************************/
+
+/*Expand on large screens*/
+@media screen and (min-width: 700px) and (min-height: 600px) {
+  .board-container .row {
+    width: 454px;
+  }
+  .board-container .cell {
+    width: 150px;
+    height: 150px;
+    font-size: 100px;
+  }
+}
+
+/*On small screens, hide the header*/
+@media screen and (max-height: 675px)  {
+  .page-header {
+    display:none;
+  }
+}
+
+/*On very small screens, scale down some sizes*/
+@media screen and (max-height: 590px) and (orientation: portrait)  {
+  .board-container .row {
+    width:229px;
+  }
+  .board-container .cell {
+    width: 75px;
+    height: 75px;
+    font-size: 50px;
+  }
+  h2 {
+    font-size: 16px;
+  }
+  .player-container input,
+  .player-container select {
+    font-size: 12px;
+  }
+}
+
+/*Display players side-by-side on large screens*/
+@media screen and (min-width: 700px) and (min-height: 600px) {
+  .player-container {
+    width: 50%;
+    float: left;
+  }
+}
+
+/*On mobile screens in landscape orientation, move the display to the side*/
+@media screen and (max-height: 700px) and (min-height: 320px) and (orientation: landscape) {
+  .board-container {
+    width: 60%;
+    float: left;
+  }
+  .display-container {
+    width: 40%;
+    float: left;
+  }
 }
