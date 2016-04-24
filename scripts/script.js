@@ -479,16 +479,14 @@ Display.prototype = {
     boardWidth = $boardContainer.width();
     boardHeight = $boardContainer.height();
     boardPos = $boardContainer.position();
-    $('.newGameModalDialog').css({
+    $('.newGameDialog').css({
       left: boardPos.left + boardWidth / 2 - 150,
       top: boardPos.top + boardHeight / 2 - 100
     });
-    $('.backgroundWrapper').fadeIn();
-    $('.newGameModalDialog').fadeIn();
+    $('.newGameDialog').fadeIn();
   },
   newGameModalClose: function() {
-    $('.backgroundWrapper').fadeOut();
-    $('.newGameModalDialog').fadeOut();
+    $('.newGameDialog').fadeOut();
   }
 };
 

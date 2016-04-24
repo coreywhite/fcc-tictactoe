@@ -145,27 +145,13 @@ html, body {
 .player-container select option {
   color:#000;
 }
-
-/*Modal dialog to start a new game*/
-.backgroundWrapper{
-    display:none;
-    position:fixed;
-    height:100%;
-    width:100%;
-    left: 0;
-    top: 0;
-    background:#000;
-    opacity: 0.4;
-    filter: alpha(opacity=70);
-    z-index:1;
-}
-.newGameModalDialog{
+.newGameDialog{
     display: none;
     position: absolute;
     z-index: 2;
     text-align: center;
 }
-.newGameModalDialog button {
+.newGameDialog button {
   width: 300px;
   height: 200px;
   background: rgba(22,34,42, .9);
@@ -178,9 +164,9 @@ html, body {
   text-align: center;
   transition: all .1s ease;
 }
-.newGameModalDialog button:hover,
-.newGameModalDialog button:focus,
-.newGameModalDialog button:active{
+.newGameDialog button:hover,
+.newGameDialog button:focus,
+.newGameDialog button:active{
   border: 3px solid rgba(86, 180, 239, 1);
   color: rgba(86, 180, 239, 1);
 }
