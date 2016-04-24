@@ -348,14 +348,15 @@ function Game($boardContainer, $displayContainer) {
 Game.prototype = {
   constructor: Game,
   startMatch: function() {
-    //Start a new match
-    this.curPlayer = this.getPlayersByMarker("X").player;
+    //Close the modal restart display if it is open
+    this.display.newGameModalClose();
     //Replace the current board with a new one
     this.board = new Grid(3);
     this.board.renderDisplay(this.$boardContainer);
     this.display.update();
-    //Close the modal restart display if it is open
-    this.display.newGameModalClose();
+    //Start a new match
+    this.curPlayer = this.getPlayersByMarker("X").player;
+    this.curPlayer.controller.takeTurn();
   },
   isValidMove: function(cell) {
     //Check whether it is possible to move on a particular cell
