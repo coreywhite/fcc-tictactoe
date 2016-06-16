@@ -1,0 +1,235 @@
+*,
+*::before,
+*::after {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Open Sans', sans-serif;
+  background: #16222A; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #16222A , #072D40); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #16222A , #072D40); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+}
+
+/*Header with glowing text*/
+.page-header {
+  text-align: center;
+  text-overflow: clip;
+  text-shadow:  0 0 10px  rgba(158, 202, 237, 0.6),
+                0 0 20px  rgba(158, 202, 237, 0.6),
+                0 0 40px rgba(86, 180, 239, .7),
+                0 0 70px rgba(86, 180, 239, .7),
+                0 0 80px rgba(86, 180, 239, .7),
+                0 0 100px rgba(86, 180, 239, .7);
+}
+
+.board-container .row {
+  width: 304px;
+  margin: 0 auto;
+}
+
+
+
+/*Display the cells where player markers will go. Default to small size.*/
+.board-container .cell {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  color: #fff;
+  text-overflow: clip;
+  text-shadow:  0 0 10px  rgba(158, 202, 237, 0.6),
+                0 0 20px  rgba(158, 202, 237, 0.6),
+                0 0 40px rgba(86, 180, 239, .7),
+                0 0 70px rgba(86, 180, 239, .7),
+                0 0 80px rgba(86, 180, 239, .7),
+                0 0 100px rgba(86, 180, 239, .7);
+  width: 100px;
+  height: 100px;
+  font-size: 70px;
+}
+
+/*Minor glow on hover to indicate where the player will move*/
+.board-container .cell:hover {
+  background: radial-gradient(ellipse at center, rgba(158, 202, 237, 0.2) 0%,rgba(158, 202, 237, 0) 60%);
+}
+
+
+
+/*Borders on middle row and column*/
+.board-container .row[data-row="1"] {
+  border-top: 2px solid rgba(86, 180, 239, .7);
+  border-bottom: 2px solid rgba(86, 180, 239, .7);
+}
+.board-container .cell[data-col="1"] {
+  border-right: 2px solid rgba(86, 180, 239, .7);
+  border-left: 2px solid rgba(86, 180, 239, .7);
+}
+
+/*Subtle glow effect for grid lines*/
+.board-container .row[data-row="0"] {
+  box-shadow: 0px 4px 2px -2px rgba(158, 202, 237, 0.6);
+}
+.board-container .row[data-row="1"] {
+  box-shadow: 0px 2px 2px -2px rgba(158, 202, 237, 0.6);
+}
+.board-container .cell[data-col="0"] {
+  box-shadow: 4px 0px 3px -2px rgba(158, 202, 237, 0.6);
+}
+.board-container .cell[data-col="1"] {
+  box-shadow: 2px 0px 3px -2px rgba(158, 202, 237, 0.6);
+}
+
+/*Styling of controls*/
+.display-container {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #fff;
+  text-overflow: clip;
+  text-shadow:  0 0 8px  rgba(158, 202, 237, 0.6),
+                0 0 16px  rgba(158, 202, 237, 0.6),
+                0 0 24px rgba(86, 180, 239, .7),
+                0 0 32px rgba(86, 180, 239, .7),
+                0 0 40px rgba(86, 180, 239, .7)
+}
+#message {
+  width: 100%;
+  min-height: 2em;
+  text-align: center;
+}
+.player-container {
+  margin:0;
+  width: 100%;
+  text-align: center;
+}
+.player-container  ul {
+  padding: 0;
+  margin: 5px 10px 5px 0;
+}
+.player-container li {
+  list-style: none;
+  display: inline-block;
+  margin: 5px;
+  font-weight: bold;
+}
+.player-container li.player-name {
+  display: block;
+}
+
+.player-container input,
+.player-container select {
+  margin: 0;
+  width: 100%;
+  color: rgba(86, 180, 239, .7);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  background-color: transparent;
+  appearance: none;
+  box-shadow: none;
+  border-radius: 3px;
+  outline: none;
+  padding: 2px;
+  border: 3px solid rgba(86, 180, 239, .7);
+  transition: border 0.2s;
+  min-height: 40px;
+}
+.player-container input:focus,
+.player-container select:focus {
+  border: 3px solid rgba(86, 180, 239, 1);
+  color: rgba(86, 180, 239, 1);
+}
+.player-container select option {
+  color:#000;
+}
+.newGameDialog{
+    display: none;
+    position: absolute;
+    z-index: 2;
+    text-align: center;
+}
+.newGameDialog button {
+  width: 300px;
+  height: 200px;
+  background: rgba(22,34,42, .9);
+  border-radius: 6px;
+  border: 3px solid rgba(86, 180, 239, .7);
+  color: rgba(86, 180, 239, .7);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  font-size: 32px;
+  text-align: center;
+  transition: all .1s ease;
+}
+.newGameDialog button:hover,
+.newGameDialog button:focus,
+.newGameDialog button:active{
+  border: 3px solid rgba(86, 180, 239, 1);
+  color: rgba(86, 180, 239, 1);
+}
+
+
+/*****************************************************************************/
+/* Responsive adjustments */
+/*****************************************************************************/
+
+/*Expand on large screens*/
+@media screen and (min-width: 700px) and (min-height: 600px) {
+  .board-container .row {
+    width: 454px;
+  }
+  .board-container .cell {
+    width: 150px;
+    height: 150px;
+    font-size: 100px;
+  }
+}
+
+/*On small screens, hide the header*/
+@media screen and (max-height: 675px)  {
+  .page-header {
+    display:none;
+  }
+}
+
+/*On very small screens, scale down some sizes*/
+@media screen and (max-height: 590px) and (orientation: portrait)  {
+  .board-container .row {
+    width:229px;
+  }
+  .board-container .cell {
+    width: 75px;
+    height: 75px;
+    font-size: 50px;
+  }
+  h2 {
+    font-size: 16px;
+  }
+  .player-container input,
+  .player-container select {
+    font-size: 12px;
+  }
+}
+
+/*Display players side-by-side on large screens*/
+@media screen and (min-width: 700px) and (min-height: 600px) {
+  .player-container {
+    width: 50%;
+    float: left;
+  }
+}
+
+/*On mobile screens in landscape orientation, move the display to the side*/
+@media screen and (max-height: 700px) and (min-height: 320px) and (orientation: landscape) {
+  .board-container {
+    width: 60%;
+    float: left;
+  }
+  .display-container {
+    width: 40%;
+    float: left;
+  }
+}

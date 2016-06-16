@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>FCC Zipline - Tic Tac Toe</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+
+  <div class="newGameDialog">
+    <button id="reset-button">Play again?</button>
+  </div>
+
+  <div class="container" id="site-wrapper">
+    <div class="page-header">
+      <h1>Tic Tac Toe</h1>
+    </div>
+
+
+
+    <div class="container board-container">
+    </div>
+
+    <div class="container display-container">
+      <h2 id="message"></h2>
+      <div class="container player-container" id="p1">
+        <ul>
+          <li class="player-name">
+            <input type="text" value="Player 1" class="player-input-name" data-player="p1">
+          </li>
+          <li class="player-mark">
+            <select name="p1-select-marker" class="player-select-marker" data-player="p1">
+              <option value="X" selected>X</option>
+              <option value="O">O</option>
+            </select>
+          </li>
+          <li class="player-controller">
+            <select name="p1-select-controller" class="player-select-controller" data-player="p1">
+              <option value="human" selected>Human</option>
+              <option value="easy">Easy</option>
+              <option value="normal">Normal</option>
+              <option value="hard">Hard</option>
+            </select>
+          </li>
+        </ul>
+      </div>
+      <div class="container player-container" id="p2">
+          <ul>
+            <li class="player-name">
+              <input type="text" value="Player 2" class="player-input-name" data-player="p2">
+            </li>
+            <li class="player-controller">
+              <select name="p2-select-controller" class="player-select-controller" data-player="p2">
+                <option value="human">Human</option>
+                <option value="easy">Easy</option>
+                <option value="normal">Normal</option>
+                <option value="hard" selected>Hard</option>
+              </select>
+            </li>
+            <li class="player-mark">
+              <select name="p2-select-marker" class="player-select-marker" data-player="p2">
+                <option value="X">X</option>
+                <option value="O" selected>O</option>
+              </select>
+            </li>
+
+          </ul>
+        </div>
+    </div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+  <script src="scripts/script.js"></script>
+</body>
+
+</html>
